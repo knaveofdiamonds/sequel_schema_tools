@@ -1,6 +1,11 @@
 = sequel_schema_tools
 
-Description goes here.
+A set of tools providing an OO view of database schemas.
+
+== Requirements
+
+* Sequel 3.18.0
+* Rspec (development)
 
 == Note on Patches/Pull Requests
  

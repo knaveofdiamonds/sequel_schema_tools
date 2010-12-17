@@ -5,13 +5,13 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "sequel_schema_tools"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = "A Sequel extension to introspect database schemas"
+    gem.description = "A Sequel extension to introspect database schemas"
     gem.email = "roland.swingler@gmail.com"
     gem.homepage = "http://github.com/knaveofdiamonds/sequel_schema_tools"
     gem.authors = ["Roland Swingler"]
+    gem.add_dependency "sequel", ">= 3.18.0"
     gem.add_development_dependency "rspec", ">= 1.2.9"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
@@ -42,4 +42,9 @@ Rake::RDocTask.new do |rdoc|
   rdoc.title = "sequel_schema_tools #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
+end
+
+desc "Flog this baby!"
+task :flog do
+  sh 'find lib -name "*.rb" | xargs flog -m'
 end
