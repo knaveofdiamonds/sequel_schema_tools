@@ -23,3 +23,39 @@ describe Sequel::Schema::Column do
   end
 end
 
+describe Sequel::Schema::NumericColumn do
+  it "should not be unsigned by default" do
+    Sequel::Schema::NumericColumn.new('foo', 'integer').should_not be_unsigned
+  end
+  
+  it "can be unsigned" do
+    Sequel::Schema::NumericColumn.new('foo', 'integer', :unsigned => true).should be_unsigned
+  end
+end
+
+describe Sequel::Schema::EnumeratedColumn do
+  it "should have no elements by default" do
+    Sequel::Schema::EnumeratedColumn.new('foo', 'enum').elements.should == []
+  end
+
+  it "can have elements" do
+    Sequel::Schema::EnumeratedColumn.new('foo', 'enum', :elements => ['one']).
+      elements.should == ['one']
+  end
+end
+
+describe Sequel::Schema::TextualColumn do
+  it "should have a size of 255 by default" do
+    Sequel::Schema::TextualColumn.new('foo', 'char').size.should == 255
+  end
+
+  it "can have a size" do
+    Sequel::Schema::TextualColumn.new('foo', 'enum', :size => 30).size.should == 30
+  end
+
+  it "can have a charset" do
+    Sequel::Schema::TextualColumn.new('foo', 'enum', :charset => 'utf8').charset.
+      should == 'utf8'
+  end
+end
+

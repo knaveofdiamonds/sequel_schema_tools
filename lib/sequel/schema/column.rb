@@ -41,5 +41,49 @@ module Sequel
         @default = default
       end
     end
+
+    # A numeric column, such as an integer or float.
+    class NumericColumn < Column
+      # Sets whether this column is unsigned.
+      attr_writer :unsigned
+
+      # Returns whether this column is unsigned
+      def unsigned?
+        !! @unsigned
+      end
+
+      def initialize(name, type, opts={})
+        super
+        @unsigned = !! opts[:unsigned]
+      end
+    end
+
+    # A textual column such as a varchar or text.
+    class TextualColumn < Column
+      # Returns the maximum length of this column.
+      attr_accessor :size
+
+      # Returns the character set of this column.
+      #
+      # May return nil, in which case the column has the table's
+      # default character set.
+      attr_accessor :charset
+
+      def initialize(name, type, opts={})
+        super
+        @size = opts[:size] || 255
+        @charset = opts[:charset]
+      end
+    end
+
+    # An enumerated column, such as an Enum or Set (in MySQL).
+    class EnumeratedColumn < Column
+      attr_reader :elements
+
+      def initialize(name, type, opts={})
+        super
+        @elements = opts[:elements] || []
+      end
+    end
   end
 end

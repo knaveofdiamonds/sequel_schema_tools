@@ -4,43 +4,29 @@ module Sequel
       # Returns an appropriate schema parser for the database
       # connection.
       def self.for_db(db)
-        new(db)
+        new(db, ColumnParser.new)
       end
 
-      # Returns a Column given a column details array as returned by
-      # DB.schema.
-      def parse_column(column_definition)
-        name, hsh = *column_definition
+      # Returns a hash of {table_name => Table} for the current
+      # database connection.
+      def parse_db_schema
+        Hash.new(@table.tables.map {|table_name| [table_name, parse_table(table_name)] })
+      end
 
-        options = {}
-        options[:default] = hsh[:ruby_default] || hsh[:default]
-        options[:allow_null] = hsh[:allow_null]
-        
-        Column.new(name, parse_type(hsh[:db_type]), options)
+      # Returns a table based on introspecting the Database schema.
+      def parse_table(name)
+        table = Table.new(name)
+        @db.schema(table_name).each {|c| table.columns << @column_parser.parse(c) }
+        table
       end
 
       protected
-
+      
       # Creates a new schema parser for the given database
       # connection. Use for_db instead.
-      def initialize(db)
+      def initialize(db, column_parser)
+        @column_parser = column_parser
         @db = db
-      end
-
-      # Returns a type symbol for a given db_type string, suitable for
-      # use in a Sequel migration.
-      #
-      # Examples:
-      #
-      #    parse_type("int(11)")     # => :integer
-      #    parse_type("varchar(20)") # => :varchar
-      #
-      def parse_type(type)
-        case type
-        when /^int/          then :integer
-        when /^tinyint\(1\)/ then :boolean
-        when /^([^(]+)/      then $1.to_sym
-        end
       end
     end
   end
